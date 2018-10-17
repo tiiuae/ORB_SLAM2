@@ -27,20 +27,22 @@
 #include<opencv2/core/core.hpp>
 
 #include "Tracking.h"
-#include "FrameDrawer.h"
-#include "MapDrawer.h"
+//#include "FrameDrawer.h"
+//#include "MapDrawer.h"
+#include "FramePublisher.h"
+//#include "MapPublisher.h"
 #include "Map.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
 #include "KeyFrameDatabase.h"
 #include "ORBVocabulary.h"
-#include "Viewer.h"
+//#include "Viewer.h"
 
 namespace ORB_SLAM2
 {
 
-class Viewer;
-class FrameDrawer;
+//class Viewer;
+class FramePublisher;
 class Map;
 class Tracking;
 class LocalMapping;
@@ -124,6 +126,11 @@ public:
 
 private:
 
+    FramePublisher* FramePub;
+    //MapPublisher* MapPub;
+
+
+
     // Input sensor
     eSensor mSensor;
 
@@ -149,16 +156,16 @@ private:
     LoopClosing* mpLoopCloser;
 
     // The viewer draws the map and the current camera pose. It uses Pangolin.
-    Viewer* mpViewer;
+    //Viewer* mpViewer;
 
-    FrameDrawer* mpFrameDrawer;
-    MapDrawer* mpMapDrawer;
+    //FrameDrawer* mpFrameDrawer;
+    //MapDrawer* mpMapDrawer;
 
     // System threads: Local Mapping, Loop Closing, Viewer.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
     std::thread* mptLocalMapping;
     std::thread* mptLoopClosing;
-    std::thread* mptViewer;
+    //std::thread* mptViewer;
 
     // Reset flag
     std::mutex mMutexReset;
