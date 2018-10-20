@@ -37,7 +37,7 @@ FramePublisher::FramePublisher(Map* pMap):mpMap(pMap)
     mIm = cv::Mat(480,640,CV_8UC3, cv::Scalar(0,0,0));
     mbUpdated = true;
     std::cout<<"constructor 0"<<std::endl;
-    mNH = rclcpp::Node::make_shared("system");
+    mNH = rclcpp::Node::make_shared("frame");
     std::cout<<"constructor 1"<<std::endl;
     mImagePub = mNH->create_publisher<sensor_msgs::msg::Image>("annotated_frame");
     std::cout<<"publisher created"<<std::endl;

@@ -21,8 +21,8 @@
 #ifndef MAPPUBLISHER_H
 #define MAPPUBLISHER_H
 
-#include<ros/ros.h>
-#include <visualization_msgs/Marker.h>
+#include "rclcpp/rclcpp.hpp"
+#include "visualization_msgs/msg/marker.hpp"
 
 #include"Map.h"
 #include"MapPoint.h"
@@ -34,7 +34,7 @@ namespace ORB_SLAM2
 class MapPublisher
 {
 public:
-    MapPublisher(Map* pMap);
+    MapPublisher(Map* pMap, const string &strSettingPath);
 
     Map* mpMap;
 
@@ -50,24 +50,28 @@ private:
     bool isCamUpdated();
     void ResetCamFlag();
 
-    ros::NodeHandle nh;
-    ros::Publisher publisher;
+    rclcpp::Node::SharedPtr nh;
+    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher;
 
-    visualization_msgs::Marker mPoints;
-    visualization_msgs::Marker mReferencePoints;
-    visualization_msgs::Marker mKeyFrames;
-    visualization_msgs::Marker mReferenceKeyFrames;
-    visualization_msgs::Marker mCovisibilityGraph;
-    visualization_msgs::Marker mMST;
-    visualization_msgs::Marker mCurrentCamera;
+    visualization_msgs::msg::Marker mPoints;
+    visualization_msgs::msg::Marker mReferencePoints;
+    visualization_msgs::msg::Marker mKeyFrames;
+    visualization_msgs::msg::Marker mReferenceKeyFrames;
+    visualization_msgs::msg::Marker mCovisibilityGraph;
+    visualization_msgs::msg::Marker mMST;
+    visualization_msgs::msg::Marker mCurrentCamera;
 
-    float fCameraSize;
-    float fPointSize;
+    float mKeyFrameSize;
+    float mKeyFrameLineWidth;
+    float mGraphLineWidth;
+    float mPointSize;
+    float mCameraSize;
+    float mCameraLineWidth;
 
     cv::Mat mCameraPose;
     bool mbCameraUpdated;
 
-    boost::mutex mMutexCamera;
+    std::mutex mMutexCamera;
 };
 
 } //namespace ORB_SLAM
