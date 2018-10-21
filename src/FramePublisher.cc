@@ -26,7 +26,7 @@
 
 #include<boost/thread.hpp>
 #include "rclcpp/rclcpp.hpp"
-#include <cv_bridge/cv_bridge.h>
+//#include <cv_bridge/cv_bridge.h>
 
 namespace ORB_SLAM2
 {
@@ -150,6 +150,8 @@ cv::Mat FramePublisher::DrawFrame()
 
 void FramePublisher::PublishFrame()
 {
+    
+    /*
         std::cout<<"PublishFrame 1"<<std::endl;
     cv::Mat im = DrawFrame();
         std::cout<<"PublishFrame 2"<<std::endl;
@@ -168,6 +170,7 @@ void FramePublisher::PublishFrame()
 
 
     rclcpp::spin_some(mNH);
+    */
 }
 
 void FramePublisher::DrawTextInfo(cv::Mat &im, int nState, cv::Mat &imText)

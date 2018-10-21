@@ -49,7 +49,7 @@ find_package(Eigen3 3.1.0 REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(visualization_msgs REQUIRED)
-find_package(cv_bridge REQUIRED)
+#find_package(cv_bridge REQUIRED)
 
 include_directories(
 ${PROJECT_SOURCE_DIR}
@@ -58,7 +58,7 @@ ${EIGEN3_INCLUDE_DIR}
 ${rclcpp_INCLUDE_DIRS} 
 ${sensor_msgs_INCLUDE_DIRS}
 ${visualization_msgs_INCLUDE_DIRS}
-${cv_bridge_INCLUDE_DIRS}
+#${cv_bridge_INCLUDE_DIRS}
 )
 
 
@@ -114,7 +114,7 @@ target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
 ${rclcpp_LIBRARIES}
-${cv_bridge_LIBRARIES}
+#${cv_bridge_LIBRARIES}
 ${sensor_msgs_LIBRARIES}
 ${visualization_msgs_LIBRARIES}
 DBoW2
