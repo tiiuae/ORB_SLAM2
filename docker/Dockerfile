@@ -114,10 +114,11 @@ RUN chmod +x $HOME/scripts/build_opencv.sh
 RUN bash $HOME/scripts/build_opencv.sh
 
 
-######## ORBSLAM2 SETUP
+######## ORB_SLAM2
 
 
 # create a workspace for orbslam
+ADD https://api.github.com/repos/alsora/ORB_SLAM2/git/refs/heads/master version.json
 RUN git clone https://github.com/alsora/ORB_SLAM2.git $HOME/ORB_SLAM2
 WORKDIR $HOME/ORB_SLAM2
 
@@ -130,5 +131,23 @@ RUN /bin/bash -c 'source $HOME/ros2_sdk/install/setup.sh; \
   bash build.sh'
 
 
+######## ORB_SLAM2 ROS2
 
 
+# create a ros2 workspace
+RUN mkdir -p $HOME/ws/src
+WORKDIR $HOME/ws
+
+# get some dependencies
+RUN apt-get install -y libcanberra-gtk-module libboost-all-dev
+RUN pip install numpy
+
+# get source code
+RUN git clone -b ros2 https://github.com/ros-perception/vision_opencv.git src/vision_opencv
+RUN git clone https://github.com/ros2/message_filters src/message_filters
+RUN ln -s $HOME/ORB_SLAM2/ros2_ORB_SLAM2 src/
+
+# build the workspace
+RUN /bin/bash -c 'source $HOME/ros2_sdk/install/setup.sh; \
+  export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH; \
+  colcon build'
