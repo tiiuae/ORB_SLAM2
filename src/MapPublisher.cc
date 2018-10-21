@@ -22,7 +22,8 @@
 #include "MapPoint.h"
 #include "KeyFrame.h"
 
-using VisualizationMsg = visualization_msgs::msg::Marker;
+using MarkerMsg = visualization_msgs::msg::Marker;
+using PointCloud2Msg = sensor_msgs::msg::PointCloud2;
 using PointMsg = geometry_msgs::msg::Point;
 
 namespace ORB_SLAM2
@@ -47,16 +48,16 @@ MapPublisher::MapPublisher(Map* pMap, const string &strSettingPath):mpMap(pMap),
     const char* KEYFRAMES_NAMESPACE = "KeyFrames";
     const char* GRAPH_NAMESPACE = "Graph";
     const char* CAMERA_NAMESPACE = "Camera";
-
+    
     //Configure MapPoints
     mPoints.header.frame_id = MAP_FRAME_ID;
     mPoints.ns = POINTS_NAMESPACE;
     mPoints.id=0;
-    mPoints.type = VisualizationMsg::POINTS;
+    mPoints.type = MarkerMsg::POINTS;
     mPoints.scale.x=mPointSize;
     mPoints.scale.y=mPointSize;
     mPoints.pose.orientation.w=1.0;
-    mPoints.action=VisualizationMsg::ADD;
+    mPoints.action=MarkerMsg::ADD;
     mPoints.color.a = 1.0;
 
     //Configure KeyFrames
@@ -64,10 +65,10 @@ MapPublisher::MapPublisher(Map* pMap, const string &strSettingPath):mpMap(pMap),
     mKeyFrames.header.frame_id = MAP_FRAME_ID;
     mKeyFrames.ns = KEYFRAMES_NAMESPACE;
     mKeyFrames.id=1;
-    mKeyFrames.type = VisualizationMsg::LINE_LIST;
+    mKeyFrames.type = MarkerMsg::LINE_LIST;
     mKeyFrames.scale.x=0.005;
     mKeyFrames.pose.orientation.w=1.0;
-    mKeyFrames.action=VisualizationMsg::ADD;
+    mKeyFrames.action=MarkerMsg::ADD;
 
     mKeyFrames.color.b=1.0f;
     mKeyFrames.color.a = 1.0;
@@ -76,10 +77,10 @@ MapPublisher::MapPublisher(Map* pMap, const string &strSettingPath):mpMap(pMap),
     mCovisibilityGraph.header.frame_id = MAP_FRAME_ID;
     mCovisibilityGraph.ns = GRAPH_NAMESPACE;
     mCovisibilityGraph.id=2;
-    mCovisibilityGraph.type = VisualizationMsg::LINE_LIST;
+    mCovisibilityGraph.type = MarkerMsg::LINE_LIST;
     mCovisibilityGraph.scale.x=0.002;
     mCovisibilityGraph.pose.orientation.w=1.0;
-    mCovisibilityGraph.action=VisualizationMsg::ADD;
+    mCovisibilityGraph.action=MarkerMsg::ADD;
     mCovisibilityGraph.color.b=0.7f;
     mCovisibilityGraph.color.g=0.7f;
     mCovisibilityGraph.color.a = 0.3;
@@ -88,10 +89,10 @@ MapPublisher::MapPublisher(Map* pMap, const string &strSettingPath):mpMap(pMap),
     mMST.header.frame_id = MAP_FRAME_ID;
     mMST.ns = GRAPH_NAMESPACE;
     mMST.id=3;
-    mMST.type = VisualizationMsg::LINE_LIST;
+    mMST.type = MarkerMsg::LINE_LIST;
     mMST.scale.x=0.005;
     mMST.pose.orientation.w=1.0;
-    mMST.action=VisualizationMsg::ADD;
+    mMST.action=MarkerMsg::ADD;
     mMST.color.b=0.0f;
     mMST.color.g=1.0f;
     mMST.color.a = 1.0;
@@ -100,38 +101,38 @@ MapPublisher::MapPublisher(Map* pMap, const string &strSettingPath):mpMap(pMap),
     mCurrentCamera.header.frame_id = MAP_FRAME_ID;
     mCurrentCamera.ns = CAMERA_NAMESPACE;
     mCurrentCamera.id=4;
-    mCurrentCamera.type = VisualizationMsg::LINE_LIST;
+    mCurrentCamera.type = MarkerMsg::LINE_LIST;
     mCurrentCamera.scale.x=0.01;//0.2; 0.03
     mCurrentCamera.pose.orientation.w=1.0;
-    mCurrentCamera.action=VisualizationMsg::ADD;
+    mCurrentCamera.action=MarkerMsg::ADD;
     mCurrentCamera.color.g=1.0f;
     mCurrentCamera.color.a = 1.0;
-
+    
     //Configure Reference MapPoints
     mReferencePoints.header.frame_id = MAP_FRAME_ID;
     mReferencePoints.ns = POINTS_NAMESPACE;
     mReferencePoints.id=6;
-    mReferencePoints.type = VisualizationMsg::POINTS;
+    mReferencePoints.type = MarkerMsg::POINTS;
     mReferencePoints.scale.x=mPointSize;
     mReferencePoints.scale.y=mPointSize;
     mReferencePoints.pose.orientation.w=1.0;
-    mReferencePoints.action=VisualizationMsg::ADD;
+    mReferencePoints.action=MarkerMsg::ADD;
     mReferencePoints.color.r =1.0f;
     mReferencePoints.color.a = 1.0;
 
     //Configure Publisher
     
-    std::cout<<"constructor 0"<<std::endl;
     nh = rclcpp::Node::make_shared("map");
-    std::cout<<"constructor 1"<<std::endl;
 
-    publisher = nh->create_publisher<visualization_msgs::msg::Marker>("ORB_SLAM_map");
+    publisher = nh->create_publisher<MarkerMsg>("ORB_SLAM_map");
+    //m_all_points_publisher = nh->create_publisher<PointCloud2Msg>("point_cloud_all");
+    //m_ref_points_publisher = nh->create_publisher<PointCloud2Msg>("point_cloud_ref");
 
     publisher->publish(mPoints);
     publisher->publish(mReferencePoints);
-    publisher->publish(mCovisibilityGraph);
+    //publisher->publish(mCovisibilityGraph);
     publisher->publish(mKeyFrames);
-    publisher->publish(mCurrentCamera);
+    //publisher->publish(mCurrentCamera);
 }
 
 void MapPublisher::Refresh()
@@ -143,7 +144,7 @@ void MapPublisher::Refresh()
        cv::Mat Tcw = GetCurrentCameraPose();
               std::cout<<"GetCurrentCameraPose refresh"<<std::endl;
 
-       PublishCurrentCamera(Tcw);
+       //PublishCurrentCamera(Tcw);
        std::cout<<"PublishCurrentCamera refresh"<<std::endl;
 
        ResetCamFlag();
@@ -177,6 +178,12 @@ void MapPublisher::PublishMapPoints(const vector<MapPoint*> &vpMPs, const vector
 
     set<MapPoint*> spRefMPs(vpRefMPs.begin(), vpRefMPs.end());
 
+    std::cout<<"BLACK vpMPs.size() "<< vpMPs.size()<<std::endl;
+    std::cout<<"RED spRefMPs.size() "<< spRefMPs.size()<<std::endl;
+
+    if(vpMPs.empty())
+        return;
+
     for(size_t i=0, iend=vpMPs.size(); i<iend;i++)
     {
         if(vpMPs[i]->isBad() || spRefMPs.count(vpMPs[i]))
@@ -201,7 +208,12 @@ void MapPublisher::PublishMapPoints(const vector<MapPoint*> &vpMPs, const vector
         p.z=pos.at<float>(2);
 
         mReferencePoints.points.push_back(p);
+
+        //break;
     }
+
+    std::cout<<"BLACK mPoints.points.size() "<< mPoints.points.size()<<std::endl;
+    std::cout<<"RED mReferencePoints.points.size() "<< mReferencePoints.points.size()<<std::endl;
 
     mPoints.header.stamp = nh->now();
     mReferencePoints.header.stamp = nh->now();
@@ -216,8 +228,8 @@ void MapPublisher::PublishKeyFrames(const vector<KeyFrame*> &vpKFs)
     mMST.points.clear();
 
     const float &w = mKeyFrameSize;
-    const float h = w*0.75;
-    const float z = w*0.6;
+    const float h = w*0.8;
+    const float z = w*0.5;
 
     //Camera is a pyramid. Define in camera coordinate system
     cv::Mat o = (cv::Mat_<float>(4,1) << 0, 0, 0, 1);
@@ -226,10 +238,13 @@ void MapPublisher::PublishKeyFrames(const vector<KeyFrame*> &vpKFs)
     cv::Mat p3 = (cv::Mat_<float>(4,1) << -w, -h, z, 1);
     cv::Mat p4 = (cv::Mat_<float>(4,1) << -w, h, z, 1);
 
+    std::cout<<"BLUE vpKFs.size() "<< vpKFs.size()<<std::endl;
+
+
     for(size_t i=0, iend=vpKFs.size() ;i<iend; i++)
     {
-        KeyFrame* pKF = vpKFs[i];
-        cv::Mat Twc = pKF->GetPoseInverse().t();
+        cv::Mat Tcw = vpKFs[i]->GetPose();
+        cv::Mat Twc = Tcw.inv();
         cv::Mat ow = vpKFs[i]->GetCameraCenter();
         cv::Mat p1w = Twc*p1;
         cv::Mat p2w = Twc*p2;
@@ -270,6 +285,7 @@ void MapPublisher::PublishKeyFrames(const vector<KeyFrame*> &vpKFs)
         mKeyFrames.points.push_back(msgs_p4);
         mKeyFrames.points.push_back(msgs_p1);
 
+        /*
         // Covisibility Graph
         vector<KeyFrame*> vCovKFs = vpKFs[i]->GetCovisiblesByWeight(100);
         if(!vCovKFs.empty())
@@ -313,15 +329,20 @@ void MapPublisher::PublishKeyFrames(const vector<KeyFrame*> &vpKFs)
             mMST.points.push_back(msgs_o);
             mMST.points.push_back(msgs_ol);
         }
+
+        */
     }
 
     mKeyFrames.header.stamp = nh->now();
-    mCovisibilityGraph.header.stamp = nh->now();
-    mMST.header.stamp = nh->now();
+    //mCovisibilityGraph.header.stamp = nh->now();
+    //mMST.header.stamp = nh->now();
+
+    std::cout<<"BLUE mKeyFrames.points.size() "<< mKeyFrames.points.size()<<std::endl;
+
 
     publisher->publish(mKeyFrames);
-    publisher->publish(mCovisibilityGraph);
-    publisher->publish(mMST);
+    //publisher->publish(mCovisibilityGraph);
+    //publisher->publish(mMST);
 }
 
 void MapPublisher::PublishCurrentCamera(const cv::Mat &Tcw)
@@ -331,6 +352,9 @@ void MapPublisher::PublishCurrentCamera(const cv::Mat &Tcw)
     const float &w = mCameraSize;
     const float h = w*0.75;
     const float z = w*0.6;
+
+    std::cout<<"mCameraSize "<<mCameraSize<<std::endl;
+    std::cout<<" Tcw \n" << Tcw<<std::endl;
 
     //Camera is a pyramid. Define in camera coordinate system
     cv::Mat o = (cv::Mat_<float>(4,1) << 0, 0, 0, 1);
@@ -409,5 +433,15 @@ void MapPublisher::ResetCamFlag()
     unique_lock<mutex> lock(mMutexCamera);
     mbCameraUpdated = false;
 }
+
+
+
+
+
+
+
+
+
+
 
 } //namespace ORB_SLAM

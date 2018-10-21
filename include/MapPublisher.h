@@ -23,6 +23,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "visualization_msgs/msg/marker.hpp"
+#include "sensor_msgs/msg/point_cloud2.hpp"
 
 #include"Map.h"
 #include"MapPoint.h"
@@ -52,6 +53,8 @@ private:
 
     rclcpp::Node::SharedPtr nh;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr publisher;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr m_all_points_publisher;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr m_ref_points_publisher;
 
     visualization_msgs::msg::Marker mPoints;
     visualization_msgs::msg::Marker mReferencePoints;

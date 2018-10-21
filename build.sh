@@ -27,6 +27,10 @@ echo "Configuring and building ORB_SLAM2 ..."
 
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake .. \
+  -DROS_BUILD_TYPE=Release \
+  -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
+  -DCMAKE_CXX_STANDARD_LIBRARIES="-lboost_system"
+
 make -j
 make install
