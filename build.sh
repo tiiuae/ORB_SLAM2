@@ -17,6 +17,6 @@ cp ../Thirdparty/g2o/lib/libg2o.so /usr/local/lib
 
 echo "Uncompress vocabulary ..."
 
-cd Vocabulary
+cd ../Vocabulary
 tar -xf ORBvoc.txt.tar.gz
 cd ..

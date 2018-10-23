@@ -119,7 +119,11 @@ RUN bash $HOME/scripts/build_opencv.sh
 
 # create a workspace for orbslam
 ADD https://api.github.com/repos/alsora/ORB_SLAM2/git/refs/heads/master version.json
-RUN git clone https://github.com/alsora/ORB_SLAM2.git $HOME/ORB_SLAM2
+RUN git clone --recurse-submodules https://github.com/alsora/ORB_SLAM2.git $HOME/ORB_SLAM2
+
+WORKDIR $HOME/ORB_SLAM2/ros2-ORB_SLAM2
+RUN git checkout orbslam_dev
+
 WORKDIR $HOME/ORB_SLAM2
 
 # install orbslam depenendencies
@@ -144,8 +148,10 @@ RUN pip install numpy
 
 # get source code
 RUN git clone -b ros2 https://github.com/ros-perception/vision_opencv.git src/vision_opencv
+RUN git clone -b ros2 https://github.com/ros-perception/image_common.git src/image_common
+RUN git clone -b ros2 https://github.com/ros-perception/image_transport_plugins.git src/image_transport_plugins
 RUN git clone https://github.com/ros2/message_filters src/message_filters
-RUN ln -s $HOME/ORB_SLAM2/ros2_ORB_SLAM2 src/
+RUN ln -s $HOME/ORB_SLAM2/ros2-ORB_SLAM2 src/
 
 # build the workspace
 RUN /bin/bash -c 'source $HOME/ros2_sdk/install/setup.sh; \

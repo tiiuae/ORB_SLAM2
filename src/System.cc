@@ -73,7 +73,6 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
 
     //Create KeyFrame Database
     mpKeyFrameDatabase = new KeyFrameDatabase(*mpVocabulary);
-    cout << "KeyFrameDatabase loaded!" << endl;
 
     //Create the Map
     mpMap = new Map();
@@ -92,31 +91,17 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR);
     mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
     
-
-    cout << "before FramePublisher!" << endl;
-
-    FramePub = new FramePublisher(mpMap);
-
-    cout << "FramePublisher loaded!" << endl;
-
     MapPub = new MapPublisher(mpMap, strSettingsFile);
-
-    cout << "MapPublisher loaded!" << endl;
 
     //Set pointers between threads    
     mpTracker->SetLocalMapper(mpLocalMapper);
     mpTracker->SetLoopClosing(mpLoopCloser);
-    cout << "mpTracker loaded!" << endl;
 
     mpLocalMapper->SetTracker(mpTracker);
     mpLocalMapper->SetLoopCloser(mpLoopCloser);
-    cout << "mpLocalMapper loaded!" << endl;
 
     mpLoopCloser->SetTracker(mpTracker);
     mpLoopCloser->SetLocalMapper(mpLocalMapper);
-
-
-    cout << "END loaded!" << endl;
 
 }
 
@@ -264,28 +249,18 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     }
     }
 
-    cout<<"mpTracker->GrabImageMonocular BEFORE!"<<endl;
     cv::Mat Tcw = mpTracker->GrabImageMonocular(im,timestamp);
-    cout<<"mpTracker->GrabImageMonocular DONE!"<<endl;
 
     unique_lock<mutex> lock2(mMutexState);
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
 
-    cout<<"Calling update!"<<endl;
-    FramePub->Update(mpTracker);
-    cout<<"Calling refresh!"<<endl;
-    FramePub->Refresh();
-    cout<<"Calling SetCurrentCameraPose!"<<endl;
-
     if (Tcw.rows != 0){
         MapPub->SetCurrentCameraPose(Tcw);
-        cout<<" -------------> Calling SetCurrentCameraPose DONE!"<<endl;
     }
 
     MapPub->Refresh();
-    cout<<"Calling MapPub refresh!"<<endl;
 
     return Tcw;
 }
