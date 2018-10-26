@@ -91,8 +91,6 @@ System::System(const string &strVocFile, const string &strSettingsFile, const eS
     mpLoopCloser = new LoopClosing(mpMap, mpKeyFrameDatabase, mpVocabulary, mSensor!=MONOCULAR);
     mptLoopClosing = new thread(&ORB_SLAM2::LoopClosing::Run, mpLoopCloser);
     
-    MapPub = new MapPublisher(mpMap, strSettingsFile);
-
     //Set pointers between threads    
     mpTracker->SetLocalMapper(mpLocalMapper);
     mpTracker->SetLoopClosing(mpLoopCloser);
@@ -260,7 +258,7 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
         MapPub->SetCurrentCameraPose(Tcw);
     }
 
-    MapPub->Refresh();
+    //MapPub->Refresh();
 
     return Tcw;
 }
@@ -503,5 +501,32 @@ Frame System::GetCurrentFrame()
     unique_lock<mutex> lock(mMutexState);
     return mpTracker->mCurrentFrame;
 }
+
+vector<KeyFrame*> System::GetAllKeyFrames()
+{
+    unique_lock<mutex> lock(mMutexState);
+    return mpMap->GetAllKeyFrames();
+}
+
+
+vector<MapPoint*> System::GetAllMapPoints()
+{
+    unique_lock<mutex> lock(mMutexState);
+    return mpMap->GetAllMapPoints();
+}
+
+vector<MapPoint*> System::GetReferenceMapPoints()
+{
+    unique_lock<mutex> lock(mMutexState);
+    return mpMap->GetReferenceMapPoints();
+}
+
+bool System::IsMapOptimized()
+{
+    unique_lock<mutex> lock(mMutexState);
+    return mpLocalMapper->isMapOptimized();
+}
+
+
 
 } //namespace ORB_SLAM

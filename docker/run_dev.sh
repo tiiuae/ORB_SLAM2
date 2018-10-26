@@ -10,7 +10,7 @@ docker run -it --rm \
  -e DISPLAY=$DISPLAY \
  -v $XSOCK:$XSOCK \
  -v $HOME/.Xauthority:/root/.Xauthority \
- -v $PWD/..:/root/VOLUMEros2-ORB_SLAM2 \
+ -v $PWD/..:/root/VOLUME_ORB_SLAM2 \
  --privileged \
  --net=host \
  ros2_orbslam2 "$@"

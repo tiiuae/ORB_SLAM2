@@ -55,14 +55,14 @@ include_directories(
 ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${EIGEN3_INCLUDE_DIR}
-${rclcpp_INCLUDE_DIRS} 
+${rclcpp_INCLUDE_DIRS}
 ${sensor_msgs_INCLUDE_DIRS}
 ${visualization_msgs_INCLUDE_DIRS}
 #${cv_bridge_INCLUDE_DIRS}
 )
 
 
-set (H_FILES 
+set (H_FILES
 include/System.h
 include/Tracking.h
 include/LocalMapping.h
@@ -70,12 +70,10 @@ include/LoopClosing.h
 include/ORBextractor.h
 include/ORBmatcher.h
 include/ORBVocabulary.h
-include/FramePublisher.h
 include/Converter.h
 include/MapPoint.h
 include/KeyFrame.h
 include/Map.h
-include/MapPublisher.h
 include/Optimizer.h
 include/PnPsolver.h
 include/Frame.h
@@ -84,19 +82,17 @@ include/Sim3Solver.h
 include/Initializer.h
 )
 
-set (SRC_FILES 
+set (SRC_FILES
 src/System.cc
 src/Tracking.cc
 src/LocalMapping.cc
 src/LoopClosing.cc
 src/ORBextractor.cc
 src/ORBmatcher.cc
-src/FramePublisher.cc
 src/Converter.cc
 src/MapPoint.cc
 src/KeyFrame.cc
 src/Map.cc
-src/MapPublisher.cc
 src/Optimizer.cc
 src/PnPsolver.cc
 src/Frame.cc

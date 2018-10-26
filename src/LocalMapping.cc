@@ -80,6 +80,8 @@ void LocalMapping::Run()
                 if(mpMap->KeyFramesInMap()>2)
                     Optimizer::LocalBundleAdjustment(mpCurrentKeyFrame,&mbAbortBA, mpMap);
 
+                mbOptimizedMap = true;
+
                 // Check redundant local Keyframes
                 KeyFrameCulling();
             }
@@ -755,6 +757,11 @@ bool LocalMapping::isFinished()
 {
     unique_lock<mutex> lock(mMutexFinish);
     return mbFinished;
+}
+
+bool LocalMapping::isMapOptimized()
+{
+    return mbOptimizedMap;
 }
 
 } //namespace ORB_SLAM

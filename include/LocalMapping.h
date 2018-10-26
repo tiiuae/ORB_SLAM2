@@ -66,6 +66,7 @@ public:
 
     void RequestFinish();
     bool isFinished();
+    bool isMapOptimized();
 
     int KeyframesInQueue(){
         unique_lock<std::mutex> lock(mMutexNewKFs);
@@ -117,6 +118,7 @@ protected:
     bool mbStopped;
     bool mbStopRequested;
     bool mbNotStop;
+    bool mbOptimizedMap;
     std::mutex mMutexStop;
 
     bool mbAcceptKeyFrames;

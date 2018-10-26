@@ -27,8 +27,6 @@
 #include<opencv2/core/core.hpp>
 
 #include "Tracking.h"
-#include "FramePublisher.h"
-#include "MapPublisher.h"
 #include "Map.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
@@ -38,8 +36,6 @@
 namespace ORB_SLAM2
 {
 
-class FramePublisher;
-class MapPublisher;
 class Map;
 class Tracking;
 class LocalMapping;
@@ -124,6 +120,11 @@ public:
     vector<cv::KeyPoint> GetInitialKeys();
     vector<int> GetInitialMatches();
     Frame GetCurrentFrame();
+    vector<KeyFrame*> GetAllKeyFrames();
+    vector<MapPoint*> GetAllMapPoints();
+    vector<MapPoint*> GetReferenceMapPoints();
+    bool IsMapOptimized();
+
 
 private:
 
@@ -150,9 +151,6 @@ private:
     // Loop Closer. It searches loops with every new keyframe. If there is a loop it performs
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
     LoopClosing* mpLoopCloser;
-
-    FramePublisher* FramePub;
-    MapPublisher* MapPub;
 
     // System threads: Local Mapping, Loop Closing.
     // The Tracking thread "lives" in the main execution thread that creates the System object.
