@@ -40,7 +40,7 @@ LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 add_subdirectory(Thirdparty/DBoW2)
 add_subdirectory(Thirdparty/g2o)
 
-find_package(OpenCV 3.0 REQUIRED)
+find_package(OpenCV 4 QUIET)
 if(NOT OpenCV_FOUND)
     message(FATAL_ERROR "OpenCV > 3.0 not found.")
 endif()
