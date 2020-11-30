@@ -1,7 +1,7 @@
 
 echo "Configuring and building ORB_SLAM2 ..."
 
-mkdir build
+mkdir -p build
 cd build
 cmake .. \
   -DROS_BUILD_TYPE=Release \
@@ -9,11 +9,6 @@ cmake .. \
   -DCMAKE_CXX_STANDARD_LIBRARIES="-lboost_system"
 
 make -j
-make install
-
-cp ../lib/libDBoW2.so /usr/local/lib
-cp ../Thirdparty/g2o/lib/libg2o.so /usr/local/lib
-
 
 echo "Uncompress vocabulary ..."
 
