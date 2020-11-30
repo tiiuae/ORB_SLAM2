@@ -23,7 +23,6 @@
 #include "System.h"   // IWYU pragma: associated
 #include "Converter.h"
 #include <thread>
-//#include <pangolin/pangolin.h>
 #include <iomanip>
 
 #include <unistd.h>
@@ -36,15 +35,12 @@
 
 #include "Converter.h"
 #include "Frame.h"
-#include "FrameDrawer.h"
 #include "KeyFrame.h"
 #include "KeyFrameDatabase.h"
 #include "LocalMapping.h"
 #include "LoopClosing.h"
 #include "Map.h"
-#include "MapDrawer.h"
 #include "Tracking.h"
-#include "Viewer.h"
 
 namespace ORB_SLAM2
 {
@@ -274,12 +270,6 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
     mTrackingState = mpTracker->mState;
     mTrackedMapPoints = mpTracker->mCurrentFrame.mvpMapPoints;
     mTrackedKeyPointsUn = mpTracker->mCurrentFrame.mvKeysUn;
-
-    if (Tcw.rows != 0){
-        MapPub->SetCurrentCameraPose(Tcw);
-    }
-
-    //MapPub->Refresh();
 
     return Tcw;
 }
