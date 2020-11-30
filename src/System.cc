@@ -46,7 +46,7 @@ namespace ORB_SLAM2
 {
 class MapPoint;
 
-System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor)
+System::System(const string &strVocFile, const string &strSettingsFile, const eSensor sensor, const bool bUseViewer)
 :mSensor(sensor), mbReset(false),mbActivateLocalizationMode(false),
         mbDeactivateLocalizationMode(false)
 {
